@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { isValidObjectId } = require('mongoose');
 const { Note } = require('../../models');
 const { authMiddleware } = require('../../utils/auth');
 
@@ -42,6 +43,12 @@ router.post('/', async (req, res) => {
 // PUT /api/notes/:id - Update an owned note
 router.put('/:id', async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'Invalid note ID.',
+      });
+    }
+
     const note = await Note.findById(req.params.id);
 
     if (!note) {
@@ -79,6 +86,12 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/notes/:id - Delete an owned note
 router.delete('/:id', async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'Invalid note ID.',
+      });
+    }
+
     const note = await Note.findById(req.params.id);
 
     if (!note) {
